@@ -1,0 +1,83 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>SOCKET CLIENT</title>
+<link rel="stylesheet" th:href="@{/style.css}"></link>
+<!-- <script type="text/javascript"  src="../static/jquery-3.4.1.js"></script> -->
+<script th:src="@{jquery-3.4.1.js}" type="text/javascript"></script>
+<script type="text/javascript">
+	function submitform1() {
+		//alert("即将进入ajax调用");//调试时使用
+		
+				$.ajax({
+					//几个参数需要注意一下
+					async : true,//默认就是true代表异步
+					//type: "POST",//方法类型
+					dataType : "json",//预期服务器返回的数据类型
+					url : "/socketclient.submit",//url
+					data : $('#form1').serialize(),
+					success : function(result) {
+						console.log(result);//打印服务端返回的数据(调试用)
+
+						if (result.resultCode == 200) {
+							alert("SUCCESS");
+							//document.getElementById('returnMsg').value=result.msg;//此命令经测试无效
+							//document.getElementById('returnMsg').innerHTML = result.msg;//此命令后解析返回报文中的标签，无法原样输出
+							document.getElementById('returnMsg').textContent = result.msg;
+						}
+						if (result.resultCode == 500) {
+							alert("异常"+result.error);
+
+						}
+
+						;
+					},
+					error : function() {
+						alert("异常！");
+					}
+				});
+	};
+	function alert11() {
+		alert("11");
+	}
+</script>
+
+</head>
+
+<body>
+
+
+	<h2>SOCKET CLIENT ON WEB</h2>
+	<hr />
+
+	<h3>编辑区域</h3>
+	<form id="form1" method="post">
+		<label for="serverHost">服务端IP:</label> <input type="text"
+			name="serverHost" size="50" required="required"></input> <label
+			for="serverPort">服务端口:</label> <input type="number" name="serverPort"
+			size="50" required="required"></input><br /> <label for="encoding">报文编码格式:</label>
+		<select name="encoding">
+			<option>UTF-8</option>
+			<option>GBK</option>
+		</select> <label for="lengthConsumeBytesNum">报文长度占用字节数:</label> <input
+			type="number" name="lengthConsumeBytesNum" size="50"
+			required="required" value="8"></input><br /> <br /> <br /> <label
+			for="origContent">原生请求socket报文(必输):</label><br />
+		<textarea name="origContent" cols="80" rows="5" required="required"></textarea>
+		<br /> <input type="button" value="发送请求报文" th:onclick="submitform1();"></input>&nbsp;<input
+			type="reset" value="重置表单"></input>
+		<!--  <input value="发送请求报文" type="submit"></input> -->
+	</form>
+
+	<hr />
+
+	<h4>返回socket报文</h4>
+	<div id="div1">
+		<!-- <pre id="returnMsg"></pre> -->
+		<textarea  id="returnMsg" name="returnMsg" cols="80" rows="8" readonly="readonly"></textarea>
+
+	</div>
+
+</body>
+
+</html>
